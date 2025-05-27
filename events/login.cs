@@ -1,5 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,7 @@ namespace drupAuto.events
             first.SendKeys(code[0].ToString());
             System.Threading.Thread.Sleep(1500);
 
+
             Actions actions = new Actions(driver);
             actions.SendKeys(code[1].ToString()).Perform();
             System.Threading.Thread.Sleep(700);
@@ -47,6 +50,22 @@ namespace drupAuto.events
 
             actions.SendKeys(code[5].ToString()).Perform();
             System.Threading.Thread.Sleep(700);
+
+
+        }
+
+        public void HandleOptionalPopup()
+        {
+            By skipbtn = By.XPath("//span[text()='Skip']");
+
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn)); // Replace with actual locator
+
+            skipButton.Click();
+
+            // Skip button didn't appear - do nothing
+            Console.WriteLine("Skip button not present, proceeding without skipping.");
         }
     }
+}
 }

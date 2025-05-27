@@ -17,6 +17,7 @@ class SeleniumDemo
             driver.Navigate().GoToUrl("https://draup.com/platformlogin/");
             var login = new login(driver);
             login.loginIntoSystem();
+            login.HandleOptionalPopup();
 
             
         }
