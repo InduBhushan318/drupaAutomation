@@ -66,6 +66,25 @@ namespace drupAuto.events
             // Skip button didn't appear - do nothing
             Console.WriteLine("Skip button not present, proceeding without skipping.");
         }
+
+        public void SelectFromAccountsDropdown(string optionText)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            IWebElement accountsDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
+            accountsDropdown.Click();
+
+            wait.Until(driver => driver.FindElements(By.CssSelector("div[aria-labelledby='nav-dropdown'][class='dropdown-menu show']")));
+            IReadOnlyCollection<IWebElement> dropdownOptions = wait.Until(driver => driver.FindElements(By.XPath("//div[contains(@class, 'dropdown-menu')]//li//a/span")));
+
+            foreach (IWebElement option in dropdownOptions)
+            {
+                if (option.Text.Trim().Equals(optionText, StringComparison.OrdinalIgnoreCase))
+                {
+                    option.Click();
+                    break;
+                }
+            }
+        }
     }
 }
-}
+
