@@ -110,16 +110,23 @@ namespace drupAuto.events
 
         public void SelectResultPerPage100()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
-            
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
             //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             //js.ExecuteScript("window.scrollBy(0,1000);");
 
             //IWebElement element = driver.FindElement(By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/span"));
             //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             //js.ExecuteScript("arguments[0].scrollIntoView(true);", element);
-            //Thread.Sleep(500);
+            Thread.Sleep(500);
+            Actions actions = new Actions(driver);
+            for (int i = 0; i < 35; i++)
+            {
+                actions.SendKeys(Keys.ArrowDown).Perform();
+                Thread.Sleep(300); // Optional pause to simulate natural scroll
+            }
 
+            Thread.Sleep(500);
             var dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/div/div/button/div[2]/i")));
             Thread.Sleep(500);
             dropdown.Click();
