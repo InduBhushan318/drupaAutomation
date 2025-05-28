@@ -1,9 +1,11 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -105,6 +107,56 @@ namespace drupAuto.events
             chooseAccounts.Click();
             
         }
+
+        public void Pagination()
+        {
+            
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            List<string> allData = new List<string>();
+
+            int currentPage = 1;
+            int totalPages = 16000; // Suppose 100 records per page
+
+            while (currentPage <= totalPages)
+            {
+                Console.WriteLine($"Scraping page {currentPage}...");
+
+                // Wait for elements to load
+                wait.Until(d => d.FindElements(By.CssSelector(".your-element-class")).Count > 0);
+
+                // Collect data from each element on this page
+                IList<IWebElement> elements = driver.FindElements(By.CssSelector(".your-element-class"));
+                foreach (var element in elements)
+                {
+                    allData.Add(element.Text); // Or element.GetAttribute("href") etc.
+                }
+
+                // OPTIONAL: Save to file after each page
+                File.AppendAllLines("scraped_data.txt", allData);
+                allData.Clear();
+
+                // Click on the "Next" or go to the next page
+                try
+                {
+                    IWebElement nextButton = wait.Until(d => d.FindElement(By.CssSelector(".next-page-button")));
+                    nextButton.Click();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Next button not found or error occurred: " + ex.Message);
+                    break;
+                }
+
+                // Optional sleep to reduce server load
+                Thread.Sleep(1000);
+
+                currentPage++;
+            }
+
+            driver.Quit();
+            Console.WriteLine("Scraping complete.");
+        }
     }
+}
 }
 
