@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace drupAuto.events
@@ -28,28 +29,28 @@ namespace drupAuto.events
             contubtn.Click();
             Console.Write("enter the code:- ");
             var code = Console.ReadLine();
-            System.Threading.Thread.Sleep(30000);
+            System.Threading.Thread.Sleep(1000);
             IWebElement first = driver.FindElement(By.Id("first"));
 
             first.SendKeys(code[0].ToString());
-            System.Threading.Thread.Sleep(1500);
+            //System.Threading.Thread.Sleep(500);
 
 
             Actions actions = new Actions(driver);
             actions.SendKeys(code[1].ToString()).Perform();
-            System.Threading.Thread.Sleep(700);
+            //System.Threading.Thread.Sleep(700);
 
             actions.SendKeys(code[2].ToString()).Perform();
-            System.Threading.Thread.Sleep(700);
+            //System.Threading.Thread.Sleep(700);
 
             actions.SendKeys(code[3].ToString()).Perform();
-            System.Threading.Thread.Sleep(700);
+            //System.Threading.Thread.Sleep(700);
 
             actions.SendKeys(code[4].ToString()).Perform();
-            System.Threading.Thread.Sleep(700);
+            //System.Threading.Thread.Sleep(700);
 
             actions.SendKeys(code[5].ToString()).Perform();
-            System.Threading.Thread.Sleep(700);
+            //System.Threading.Thread.Sleep(700);
 
 
         }
@@ -57,7 +58,21 @@ namespace drupAuto.events
         public void HandleOptionalPopup()
         {
             Actions actions = new Actions(driver);
-            actions.SendKeys(Keys.Escape).Perform();
+            try
+            {
+                
+                By skipbtn = By.XPath("//span[text()='Skip']");
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn));
+                actions.SendKeys(Keys.Escape).Perform();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Thread.Sleep(10000);
+                actions.SendKeys(Keys.Escape).Perform();
+                // Skip button didn't appear - do nothing
+                Console.WriteLine("Skip button not present, proceeding without skipping.");
+            }
 
             //By skipbtn = By.XPath("//span[text()='Skip']");
 
@@ -70,23 +85,25 @@ namespace drupAuto.events
             //Console.WriteLine("Skip button not present, proceeding without skipping.");
         }
 
-        public void SelectFromAccountsDropdown(string optionText)
+
+        public void ClickIndustryButtonInNav()
         {
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            IWebElement accountsDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
-            accountsDropdown.Click();
+            IWebElement industryDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/li[1]/a")));
+            industryDropdown.Click();
+        }
+        public void SelectFromAccountsDropdown()
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+           
 
-            wait.Until(driver => driver.FindElements(By.CssSelector("div[aria-labelledby='nav-dropdown'][class='dropdown-menu show']")));
-            IReadOnlyCollection<IWebElement> dropdownOptions = wait.Until(driver => driver.FindElements(By.XPath("//div[contains(@class, 'dropdown-menu')]//li//a/span")));
+            IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
+            dropdownbutton.Click();
 
-            foreach (IWebElement option in dropdownOptions)
-            {
-                if (option.Text.Trim().Equals(optionText, StringComparison.OrdinalIgnoreCase))
-                {
-                    option.Click();
-                    break;
-                }
-            }
+           
+            IWebElement chooseAccounts = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/div/div/li[2]/a")));
+            chooseAccounts.Click();
+            
         }
     }
 }

@@ -20,7 +20,8 @@ class SeleniumDemo
             var login = new login(driver);
             login.loginIntoSystem();
             login.HandleOptionalPopup();
-            login.SelectFromAccountsDropdown("Accounts");
+            login.ClickIndustryButtonInNav();
+            login.SelectFromAccountsDropdown();
 
             Console.ReadLine(); // Wait for user input before closing
         }
@@ -37,31 +38,31 @@ class SeleniumDemo
     }
 
 
-    [Test]
-    public void SeleniumTest()
-    {
-        IWebDriver driver = new ChromeDriver();
+    //[Test]
+    //public void SeleniumTest()
+    //{
+    //    IWebDriver driver = new ChromeDriver();
 
-        try
-        {
+    //    try
+    //    {
 
-            driver.Navigate().GoToUrl("https://draup.com/platformlogin/");
-            var login = new login(driver);
-            login.loginIntoSystem();
-            login.HandleOptionalPopup();
-            login.SelectFromAccountsDropdown("Accounts");
+    //        driver.Navigate().GoToUrl("https://draup.com/platformlogin/");
+    //        var login = new login(driver);
+    //        login.loginIntoSystem();
+    //        login.HandleOptionalPopup();
+    //        login.SelectFromAccountsDropdown();
 
             
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex.Message);
-        }
-        finally
-        {
-            driver.Quit();
-        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine("Error: " + ex.Message);
+    //    }
+    //    finally
+    //    {
+    //        driver.Quit();
+    //    }
 
-        //Console.ReadLine();
-    }
+    //    //Console.ReadLine();
+    //}
 }
