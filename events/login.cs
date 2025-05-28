@@ -56,15 +56,18 @@ namespace drupAuto.events
 
         public void HandleOptionalPopup()
         {
-            By skipbtn = By.XPath("//span[text()='Skip']");
+            Actions actions = new Actions(driver);
+            actions.SendKeys(Keys.Escape).Perform();
 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-            IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn)); // Replace with actual locator
+            //By skipbtn = By.XPath("//span[text()='Skip']");
 
-            skipButton.Click();
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            //IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn)); // Replace with actual locator
 
-            // Skip button didn't appear - do nothing
-            Console.WriteLine("Skip button not present, proceeding without skipping.");
+            //skipButton.Click();
+
+            //// Skip button didn't appear - do nothing
+            //Console.WriteLine("Skip button not present, proceeding without skipping.");
         }
 
         public void SelectFromAccountsDropdown(string optionText)

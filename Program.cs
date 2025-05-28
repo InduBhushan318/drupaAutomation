@@ -22,7 +22,7 @@ class SeleniumDemo
             login.HandleOptionalPopup();
             login.SelectFromAccountsDropdown("Accounts");
 
-            console.readline("Press any key to exit..."); // Wait for user input before closing
+            Console.ReadLine(); // Wait for user input before closing
         }
         catch (Exception ex)
         {
