@@ -22,6 +22,7 @@ class SeleniumDemo
             login.HandleOptionalPopup();
             login.ClickIndustryButtonInNav();
             login.SelectFromAccountsDropdown();
+            login.SelectResultPerPage100();
 
             Console.ReadLine(); // Wait for user input before closing
         }
