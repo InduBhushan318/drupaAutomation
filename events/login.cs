@@ -67,7 +67,7 @@ namespace drupAuto.events
             Actions actions = new Actions(driver);
             try
             {
-                
+
                 By skipbtn = By.XPath("//span[text()='Skip']");
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                 IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn));
@@ -82,7 +82,7 @@ namespace drupAuto.events
                 Console.WriteLine("Skip button not present, proceeding without skipping.");
             }
 
-           
+
         }
 
 
@@ -96,7 +96,7 @@ namespace drupAuto.events
         public void SelectFromAccountsDropdown()
         {
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-           
+
 
             IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
             dropdownbutton.Click();
@@ -116,7 +116,7 @@ namespace drupAuto.events
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
             wait.Until(ExpectedConditions.ElementExists(tableheaderPath));
             Actions actions = new Actions(driver);
-            while(true)
+            while (true)
             {
                 Console.WriteLine("Scrolling down the page...");
                 actions.SendKeys(Keys.ArrowDown).Perform();
@@ -124,24 +124,26 @@ namespace drupAuto.events
 
                 wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                 IWebElement pagerText = wait.Until(ExpectedConditions.ElementExists(tablePagerPath));
-                if(pagerText.Text.ToLower().Trim()== "results per page")
+                if (pagerText.Text.ToLower().Trim() == "results per page")
                 {
                     Console.WriteLine("Reached the end of the page or Results per Page text found.");
                     break; // Exit the loop if the text is found
                 }
-                
+
             }
         }
 
         public void SelectResultPerPage100()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
 
-            var dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/div/div/button/div[2]/i")));
+            var dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("(//div[contains(@class, 'caret-icon')]//i)[2]")));
             dropdown.Click();
 
-            var option100 = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"num_results-Number of results\"]/ul/li/div/ul/li[3]/div/div/div/div/div")));
+            var option100 = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[text()='100']")));
+
             option100.Click();
+            Thread.Sleep(5000);
         }
 
         public bool CheckandClickAllPageSpans(int pagenumber)
@@ -156,7 +158,7 @@ namespace drupAuto.events
             int counter = 1;
             for (int i = 0; i < pageSpans.Count; i++)
             {
-               
+
                 int actuallPageNumber = Convert.ToInt32(pageSpans[i].Text.Trim());
                 if (actuallPageNumber == pagenumber)
                 {
@@ -165,7 +167,7 @@ namespace drupAuto.events
                     desiredPageclicked = true;
                     break;
                 }
-                else if (counter ==5)
+                else if (counter == 5)
                 {
                     Console.WriteLine("page number " + pageSpans[i] + "clicked as last page in paging");
                     pageSpans[i].Click();
@@ -177,15 +179,67 @@ namespace drupAuto.events
 
             return desiredPageclicked;
 
-           
+
         }
 
         public void NavigateInsideAccount()
         {
-            
-        }
 
-        
+            while (true)
+            {
+                // Get all account rows on the page
+                var accountRows = driver.FindElements(By.XPath("//div[contains(@class,'display-flex align-items-center')]//a"));
+
+                for (int i = 0; i < accountRows.Count; i++)
+                {
+                    // Re-find elements (DOM refreshes after navigation)
+                    accountRows = driver.FindElements(By.XPath("//div[contains(@class,'display-flex align-items-center')]//a"));
+
+                    // Click the specific row
+                    accountRows[i].Click();
+                    
+
+                    // Wait for the account page to load
+                    Thread.Sleep(8000); // Consider using WebDriverWait instead
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+                    var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
+                    downloadImage.Click();
+                    //Thread.Sleep(3000);
+
+                    var pptAcountPlanOption = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//li[text()='PPT Account Plan']")));
+                    pptAcountPlanOption.Click();
+                    //Thread.Sleep(4000);
+
+                    var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
+                    getPptcrossBtn.Click();
+                    //Thread.Sleep(2000);
+                    // Perform your data extraction or actions here
+
+                    // Go back to the main list
+                    driver.Navigate().Back();
+                    Thread.Sleep(3000); // Wait for page to reload
+                }
+
+                // Check if "Next" button is enabled
+                try
+                {
+                    var nextButton = driver.FindElement(By.XPath("//span[@class='next']//i"));
+                    if (nextButton.GetAttribute("class").Contains("disabled"))
+                        break;
+
+                    nextButton.Click();
+                    Thread.Sleep(8000); // Wait for the next page to load
+                }
+                catch (NoSuchElementException)
+                {
+                    // No "Next" button found; exit loop
+                    break;
+                }
+            }
+
+            driver.Quit();
+        }
     }
 }
+
 
