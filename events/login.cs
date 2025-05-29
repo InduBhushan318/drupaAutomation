@@ -21,6 +21,23 @@ namespace drupAuto.events
             this.driver = driver;
         }
 
+        public void WaitForPageLoad(int timeoutSeconds = 30)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutSeconds));
+            wait.Until(d =>
+                ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete"
+            );
+        }
+
+        public void MoveMouseToGrid()
+        {
+            By tableheaderPath = By.XPath("//*[@id=\"table_info_popover_Account\"]/div[1]");
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(tableheaderPath));
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(element).Perform();
+        }
+
         public void loginIntoSystem()
         {
             IWebElement searchBox = driver.FindElement(By.Id("emailsso"));
@@ -35,25 +52,13 @@ namespace drupAuto.events
             IWebElement first = driver.FindElement(By.Id("first"));
 
             first.SendKeys(code[0].ToString());
-            //System.Threading.Thread.Sleep(500);
-
 
             Actions actions = new Actions(driver);
             actions.SendKeys(code[1].ToString()).Perform();
-            //System.Threading.Thread.Sleep(700);
-
             actions.SendKeys(code[2].ToString()).Perform();
-            //System.Threading.Thread.Sleep(700);
-
             actions.SendKeys(code[3].ToString()).Perform();
-            //System.Threading.Thread.Sleep(700);
-
             actions.SendKeys(code[4].ToString()).Perform();
-            //System.Threading.Thread.Sleep(700);
-
             actions.SendKeys(code[5].ToString()).Perform();
-            //System.Threading.Thread.Sleep(700);
-
 
         }
 
@@ -64,9 +69,10 @@ namespace drupAuto.events
             {
                 
                 By skipbtn = By.XPath("//span[text()='Skip']");
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                 IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn));
                 actions.SendKeys(Keys.Escape).Perform();
+                Console.WriteLine("Skip button Press.");
             }
             catch (WebDriverTimeoutException)
             {
@@ -76,118 +82,110 @@ namespace drupAuto.events
                 Console.WriteLine("Skip button not present, proceeding without skipping.");
             }
 
-            //By skipbtn = By.XPath("//span[text()='Skip']");
-
-            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-            //IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn)); // Replace with actual locator
-
-            //skipButton.Click();
-
-            //// Skip button didn't appear - do nothing
-            //Console.WriteLine("Skip button not present, proceeding without skipping.");
+           
         }
 
 
         public void ClickIndustryButtonInNav()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             IWebElement industryDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/li[1]/a")));
             industryDropdown.Click();
+            Console.WriteLine("Industry Button clicked.");
         }
         public void SelectFromAccountsDropdown()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
            
 
             IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
             dropdownbutton.Click();
+            Console.WriteLine("Click on Industry dropdown.");
 
-           
             IWebElement chooseAccounts = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/div/div/li[2]/a")));
             chooseAccounts.Click();
-            
+            Console.WriteLine("account option choosen.");
+
+        }
+
+        public void ScrolePageDown()
+        {
+            MoveMouseToGrid();
+            By tableheaderPath = By.XPath("//*[@id=\"table_info_popover_Account\"]/div[1]");
+            By tablePagerPath = By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/span");
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+            wait.Until(ExpectedConditions.ElementExists(tableheaderPath));
+            Actions actions = new Actions(driver);
+            while(true)
+            {
+                Console.WriteLine("Scrolling down the page...");
+                actions.SendKeys(Keys.ArrowDown).Perform();
+                Thread.Sleep(100); // Optional pause to simulate natural scroll
+
+                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+                IWebElement pagerText = wait.Until(ExpectedConditions.ElementExists(tablePagerPath));
+                if(pagerText.Text.ToLower().Trim()== "results per page")
+                {
+                    Console.WriteLine("Reached the end of the page or Results per Page text found.");
+                    break; // Exit the loop if the text is found
+                }
+                
+            }
         }
 
         public void SelectResultPerPage100()
         {
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
-            //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            //js.ExecuteScript("window.scrollBy(0,1000);");
-
-            //IWebElement element = driver.FindElement(By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/span"));
-            //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            //js.ExecuteScript("arguments[0].scrollIntoView(true);", element);
-            Thread.Sleep(500);
-            Actions actions = new Actions(driver);
-            for (int i = 0; i < 35; i++)
-            {
-                actions.SendKeys(Keys.ArrowDown).Perform();
-                Thread.Sleep(300); // Optional pause to simulate natural scroll
-            }
-
-            Thread.Sleep(500);
             var dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/div/div/button/div[2]/i")));
-            Thread.Sleep(500);
             dropdown.Click();
 
             var option100 = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"num_results-Number of results\"]/ul/li/div/ul/li[3]/div/div/div/div/div")));
-            Thread.Sleep(500);
             option100.Click();
-            Thread.Sleep(500);
         }
 
+        public bool CheckandClickAllPageSpans(int pagenumber)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            // Wait for the page container to be present
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".page-container")));
 
+            // Find all page number spans (excluding prev/next)
+            var pageSpans = driver.FindElements(By.CssSelector(".page-container > span.page"));
+            var desiredPageclicked = false;
+            int counter = 1;
+            for (int i = 0; i < pageSpans.Count; i++)
+            {
+               
+                int actuallPageNumber = Convert.ToInt32(pageSpans[i].Text.Trim());
+                if (actuallPageNumber == pagenumber)
+                {
+                    Console.WriteLine("page number " + pageSpans[i] + "clicked on trageted page");
+                    pageSpans[i].Click();
+                    desiredPageclicked = true;
+                    break;
+                }
+                else if (counter ==5)
+                {
+                    Console.WriteLine("page number " + pageSpans[i] + "clicked as last page in paging");
+                    pageSpans[i].Click();
+                }
+                Console.WriteLine("page number " + pageSpans[i] + "skiped");
+                counter = counter + 1;
+                // Exit if the desired page number is found and clicked
+            }
 
+            return desiredPageclicked;
 
-        //public void Pagination()
-        //{
+           
+        }
+
+        public void NavigateInsideAccount()
+        {
             
-        //    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-        //    List<string> allData = new List<string>();
+        }
 
-        //    int currentPage = 1;
-        //    int totalPages = 16000; // Suppose 100 records per page
-
-        //    while (currentPage <= totalPages)
-        //    {
-        //        Console.WriteLine($"Scraping page {currentPage}...");
-
-        //        // Wait for elements to load
-        //        wait.Until(d => d.FindElements(By.CssSelector(".your-element-class")).Count > 0);
-
-        //        // Collect data from each element on this page
-        //        IList<IWebElement> elements = driver.FindElements(By.CssSelector(".your-element-class"));
-        //        foreach (var element in elements)
-        //        {
-        //            allData.Add(element.Text); // Or element.GetAttribute("href") etc.
-        //        }
-
-        //        // OPTIONAL: Save to file after each page
-        //        File.AppendAllLines("scraped_data.txt", allData);
-        //        allData.Clear();
-
-        //        // Click on the "Next" or go to the next page
-        //        try
-        //        {
-        //            IWebElement nextButton = wait.Until(d => d.FindElement(By.CssSelector(".next-page-button")));
-        //            nextButton.Click();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine("Next button not found or error occurred: " + ex.Message);
-        //            break;
-        //        }
-
-        //        // Optional sleep to reduce server load
-        //        Thread.Sleep(1000);
-
-        //        currentPage++;
-        //    }
-
-        //    driver.Quit();
-        //    Console.WriteLine("Scraping complete.");
-        //}
+        
     }
 }
 
