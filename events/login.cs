@@ -47,9 +47,10 @@ namespace drupAuto.events
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 // Try to find a button or span with text 'Accept' or 'Accept Cookies'
                 var acceptButton = wait.Until(ExpectedConditions.ElementToBeClickable(
-                    By.XPath("*[@id=\"moove_gdpr_cookie_info_bar\"]/div/div/div[2]/button[1]')]")
+                    By.XPath("//button[@aria-label='Accept']")
                 ));
                 acceptButton.Click();
+                Thread.Sleep(500);
                 Console.WriteLine("Cookie accept button clicked.");
             }
             catch (WebDriverTimeoutException)

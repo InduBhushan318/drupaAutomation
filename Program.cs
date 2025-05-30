@@ -25,6 +25,7 @@ class SeleniumDemo
             var desiredPageclicked = true;
             driver.Navigate().GoToUrl("https://draup.com/platformlogin/");
             login.loginIntoSystem();
+            login.AcceptCookies();
             login.HandleOptionalPopup();
             login.ClickIndustryButtonInNav();
             login.SelectFromAccountsDropdown();
