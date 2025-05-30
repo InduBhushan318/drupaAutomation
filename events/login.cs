@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using drupAuto.Models;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -182,63 +183,114 @@ namespace drupAuto.events
 
         }
 
-        public void NavigateInsideAccount()
+        public void NavigateInsideAccount(page _page)
         {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".react-grid-Row")));
 
-            while (true)
+            var rows = driver.FindElements(By.CssSelector(".react-grid-Row"));
+            int counter = 1;
+            foreach (var row in rows)
             {
-                // Get all account rows on the page
-                var accountRows = driver.FindElements(By.XPath("//div[contains(@class,'display-flex align-items-center')]//a"));
+                //ensuring that grid is visiable 
+                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+                wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".react-grid-Row")));
+                // Get all cells in the row
+                var cells = row.FindElements(By.CssSelector("div"));
 
-                for (int i = 0; i < accountRows.Count; i++)
+                if (counter % 20 == 0)
                 {
-                    // Re-find elements (DOM refreshes after navigation)
-                    accountRows = driver.FindElements(By.XPath("//div[contains(@class,'display-flex align-items-center')]//a"));
-
-                    // Click the specific row
-                    accountRows[i].Click();
-                    
-
-                    // Wait for the account page to load
-                    Thread.Sleep(8000); // Consider using WebDriverWait instead
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+                    Actions actions = new Actions(driver);
+                    for (int i = 0; i < 25; i++)
+                    {
+                        Console.WriteLine("Scrolling down the page...");
+                        actions.SendKeys(Keys.ArrowDown).Perform();
+                        Thread.Sleep(100); // Optional pause to simulate natural scroll
+                    }
+                }
+                if (cells.Count > 0)
+                {
+                    cells[43].Click();
+                    Console.WriteLine(cells[43].Text);
+                    wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                     var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
                     downloadImage.Click();
-                    //Thread.Sleep(3000);
-
                     var pptAcountPlanOption = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//li[text()='PPT Account Plan']")));
                     pptAcountPlanOption.Click();
-                    //Thread.Sleep(4000);
-
                     var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
                     getPptcrossBtn.Click();
-                    //Thread.Sleep(2000);
-                    // Perform your data extraction or actions here
-
-                    // Go back to the main list
-                    driver.Navigate().Back();
-                    Thread.Sleep(3000); // Wait for page to reload
+                    SelectFromAccountsDropdown();
+                    _page.Accounts.Add(new AccountsModel
+                    {
+                        AccountName = cells[43].Text.Trim(),
+                        isProcessed = true
+                    });
                 }
 
-                // Check if "Next" button is enabled
-                try
-                {
-                    var nextButton = driver.FindElement(By.XPath("//span[@class='next']//i"));
-                    if (nextButton.GetAttribute("class").Contains("disabled"))
-                        break;
-
-                    nextButton.Click();
-                    Thread.Sleep(8000); // Wait for the next page to load
-                }
-                catch (NoSuchElementException)
-                {
-                    // No "Next" button found; exit loop
-                    break;
-                }
+                counter = counter + 1;
             }
 
-            driver.Quit();
+
+
         }
+
+        //public void NavigateInsideAccount()
+        //{
+
+        //while (true)
+        //{
+        //    // Get all account rows on the page
+        //    var accountRows = driver.FindElements(By.XPath("//div[contains(@class,'display-flex align-items-center')]//a"));
+
+        //    for (int i = 0; i < accountRows.Count; i++)
+        //    {
+        //        // Re-find elements (DOM refreshes after navigation)
+        //        accountRows = driver.FindElements(By.XPath("//div[contains(@class,'display-flex align-items-center')]//a"));
+
+        //        // Click the specific row
+        //        accountRows[i].Click();
+
+
+        //        // Wait for the account page to load
+        //        Thread.Sleep(8000); // Consider using WebDriverWait instead
+        //        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+        //        var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
+        //        downloadImage.Click();
+        //        //Thread.Sleep(3000);
+
+        //        var pptAcountPlanOption = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//li[text()='PPT Account Plan']")));
+        //        pptAcountPlanOption.Click();
+        //        //Thread.Sleep(4000);
+
+        //        var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
+        //        getPptcrossBtn.Click();
+        //        //Thread.Sleep(2000);
+        //        // Perform your data extraction or actions here
+
+        //        // Go back to the main list
+        //        driver.Navigate().Back();
+        //        Thread.Sleep(3000); // Wait for page to reload
+        //    }
+
+        //    // Check if "Next" button is enabled
+        //    try
+        //    {
+        //        var nextButton = driver.FindElement(By.XPath("//span[@class='next']//i"));
+        //        if (nextButton.GetAttribute("class").Contains("disabled"))
+        //            break;
+
+        //        nextButton.Click();
+        //        Thread.Sleep(8000); // Wait for the next page to load
+        //    }
+        //    catch (NoSuchElementException)
+        //    {
+        //        // No "Next" button found; exit loop
+        //        break;
+        //    }
+        //}
+
+        //driver.Quit();
+        //}
     }
 }
 

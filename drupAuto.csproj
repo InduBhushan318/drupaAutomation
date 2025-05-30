@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="db_operations.cs" />
     <Compile Include="events\login.cs" />
+    <Compile Include="Models\AccountsModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
