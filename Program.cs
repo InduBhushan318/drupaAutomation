@@ -6,6 +6,7 @@ using drupAuto.Models;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Interactions;
 
 
@@ -14,9 +15,9 @@ class SeleniumDemo
     
     static void Main(string[] args)
     {
-        var options = new ChromeOptions();
+        var options = new EdgeOptions();
         options.AddArgument("start-maximized");
-        IWebDriver driver = new ChromeDriver(options);
+        IWebDriver driver = new EdgeDriver(options);
         page _page=new page();
         var login = new login(driver);
         try
