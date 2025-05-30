@@ -211,29 +211,28 @@ namespace drupAuto.events
         {
             int counter = 0;
             while (true)
-                {
+            {
                 Console.WriteLine("inside NavigateInsideAccount");
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
                 wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".react-grid-Row")));
 
                 var rows = driver.FindElements(By.CssSelector(".react-grid-Row"));
-                
-                Console.WriteLine("Total rows found: " + rows.Count);
 
-                Console.WriteLine("Inside for loop:-" + counter);
+                Console.WriteLine("Total rows found: " + rows.Count);
 
                 var cells = rows[counter].FindElements(By.TagName("div"));
                 Console.WriteLine("totals cells in each row:-" + cells.Count());
-                if (counter % 10 == 0 && counter != 0)
+                if (counter >= 10)
                 {
                     Actions actions = new Actions(driver);
-                    for (int z = 0; z <= 10; z++)
+                    for (int z = 0; z <= counter; z++)
                     {
                         Console.WriteLine("scrolling event is called from inside the NavigateInsideAccount");
                         actions.SendKeys(Keys.ArrowDown).Perform();
                         Thread.Sleep(100); // Optional pause to simulate natural scroll
                     }
                 }
+
 
 
                 if (cells.Count > 0)
@@ -244,10 +243,28 @@ namespace drupAuto.events
                     wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                     var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
                     downloadImage.Click();
-                    var pptAcountPlanOption = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//li[text()='PPT Account Plan']")));
-                    pptAcountPlanOption.Click();
+                   
+
+                    var pptAccountPlanElements = driver.FindElements(By.XPath("//li[text()='PPT Account Plan']"));
+                    if (pptAccountPlanElements.Count > 0 && pptAccountPlanElements[0].Displayed)
+                    {
+                        pptAccountPlanElements[0].Click();
+                    }
+                    else
+                    {
+                        Console.WriteLine("'PPT Account Plan' option not found in the DOM or not visible.");
+                    }
+
+                    //Nitu start
+
                     var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
                     getPptcrossBtn.Click();
+
+                    ///we do need to click the cross button to close the popup after downloading the ppt file
+                    ///but we need to visit every tab on the page and choose the required check box. the list 
+                    ///of the check box in every tab is given in the xecel file attached with the email.
+
+                    //nitu code ends
                     // select the account option
                     wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
