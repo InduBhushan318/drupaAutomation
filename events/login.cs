@@ -245,29 +245,19 @@ namespace drupAuto.events
                     var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
                     downloadImage.Click();
 
-
+                    Thread.Sleep(1000); // Wait for the dropdown to appear
                     var pptAccountPlanElements = driver.FindElements(By.XPath("//li[text()='PPT Account Plan']"));
                     if (pptAccountPlanElements.Count > 0 && pptAccountPlanElements[0].Displayed)
                     {
                         pptAccountPlanElements[0].Click();
+                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[text()='Get PPT via Email']")));
+                        OpenTabOptions();
                     }
                     else
                     {
                         Console.WriteLine("'PPT Account Plan' option not found in the DOM or not visible.");
                     }
 
-                    //Nitu start
-
-                    //var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
-                    //getPptcrossBtn.Click();
-                    OpenTabOptions();
-
-                    ///we do need to click the cross button to close the popup after downloading the ppt file
-                    ///but we need to visit every tab on the page and choose the required check box. the list 
-                    ///of the check box in every tab is given in the xecel file attached with the email.
-
-                    //nitu code ends
-                    // select the account option
                     wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
 
@@ -323,13 +313,12 @@ namespace drupAuto.events
                 List<string> checkboxes = tab.Value;
 
                 Console.WriteLine($"Navigating to tab: {tabName}");
-                var tabElement = wait.Until(d => d.FindElement(By.XPath($"//span[contains(text(),'{tabName}')]")));
+                var tabElement = wait.Until(d => d.FindElement(By.XPath($"//span[@class='general-400 text' and text()='{tabName}']")));
                 tabElement.Click();
                 Thread.Sleep(1000); // wait for content to load
 
                 foreach (var checkboxLabel in checkboxes)
                 {
-                    SelectCheckboxByLabel(driver, checkboxLabel);
                 }
             }
 
