@@ -244,7 +244,7 @@ namespace drupAuto.events
                     wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                     var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
                     downloadImage.Click();
-                   
+
 
                     var pptAccountPlanElements = driver.FindElements(By.XPath("//li[text()='PPT Account Plan']"));
                     if (pptAccountPlanElements.Count > 0 && pptAccountPlanElements[0].Displayed)
@@ -258,8 +258,9 @@ namespace drupAuto.events
 
                     //Nitu start
 
-                    var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
-                    getPptcrossBtn.Click();
+                    //var getPptcrossBtn = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='modal-close']//i")));
+                    //getPptcrossBtn.Click();
+                    OpenTabOptions();
 
                     ///we do need to click the cross button to close the popup after downloading the ppt file
                     ///but we need to visit every tab on the page and choose the required check box. the list 
@@ -297,8 +298,111 @@ namespace drupAuto.events
             }
 
 
+
+
         }
+        //public void TabNames()
+        //{
+        //    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        //    // List of tab names and checkbox labels you want to select
+        //    var tabNames = new List<string> {
+        //    "Priorities",
+        //    "Tech Stack",
+        //    "Globalization Footprint",
+        //    "Hiring",
+        //    "Signals",
+        //    "Service Providers",
+        //    "Key Executives"
+        //};
+
+        //    foreach (var tabName in tabNames)
+        //    {
+        //        Console.WriteLine($"Clicking tab: {tabName}");
+
+        //        // Click tab on left navigation
+        //        var tab = wait.Until(d => d.FindElement(By.XPath($"//span[normalize-space()='{tabName}']")));
+        //        tab.Click();
+
+        //        Thread.Sleep(1000); // Wait for UI to update
+
+        //        // Find all checkboxes under the current tab
+        //        var checkboxes = driver.FindElements(By.CssSelector("input[type='checkbox']"));
+
+        //        // Select first 1 or 2 checkboxes (customize as needed)
+        //        int count = 0;
+        //        foreach (var checkbox in checkboxes)
+        //        {
+        //            if (!checkbox.Selected && checkbox.Displayed)
+        //            {
+        //                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", checkbox);
+        //                Thread.Sleep(500); // Optional
+        //                count++;
+        //            }
+        //            if (count == 2) break; // Limit selections if needed
+        //        }
+        //    }
+
+        //    Console.WriteLine("Done!");
+        //    driver.Quit();
+
+        //}
+        public void OpenTabOptions()
+        {
+
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var tabOptions = new Dictionary<string, List<string>>
+        {
+            { "Priorities", new List<string> { "Select All" } },
+            { "Tech Stack", new List<string> { "Select Top 48 Categories" } },
+            { "Globalization Footprint", new List<string> { "Select All" } },
+            { "Hiring", new List<string> { "IT", "Management & Strategy", "Procurement", "Customer Support & Service", "Financial Services Operations" } },
+            { "Signals", new List<string> { "Select All" } },
+            { "Service Providers", new List<string> { "Software Testing", "DevOps", "Artificial Intelligence & Data Science", "Application Development & Maintenance", "Robotic Process Automation", "Data Engineering", "Mobile Application Development", "Legacy Modernization", "Infrastructure Management System", "Cybersecurity", "Product Installation, Maintenance & Technical Support", "System Integration" } },
+            { "Key Executives", new List<string> { } }
+        };
+
+            foreach (var tab in tabOptions)
+            {
+                string tabName = tab.Key;
+                List<string> checkboxes = tab.Value;
+
+                Console.WriteLine($"Navigating to tab: {tabName}");
+                var tabElement = wait.Until(d => d.FindElement(By.XPath($"//span[contains(text(),'{tabName}')]")));
+                tabElement.Click();
+                Thread.Sleep(1000); // wait for content to load
+
+                foreach (var checkboxLabel in checkboxes)
+                {
+                    SelectCheckboxByLabel(driver, checkboxLabel);
+                }
+            }
+
+            Console.WriteLine("✅ Done selecting checkboxes from all tabs.");
+            driver.Quit();
+        }
+
+        public void SelectCheckboxByLabel(IWebDriver driver, string labelText)
+        {
+            try
+            {
+                var label = driver.FindElement(By.XPath($"//span[text()='{labelText}']"));
+                var checkbox = label.FindElement(By.XPath("//ancestor::*//input"));
+
+                if (!checkbox.Selected)
+                {
+                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", checkbox);
+                    Thread.Sleep(300); // brief pause between selections
+                    Console.WriteLine($"✔ Selected: {labelText}");
+                }
+            }
+            catch (NoSuchElementException)
+            {
+                Console.WriteLine($"⚠ Checkbox not found: {labelText}");
+            }
+        }
+
     }
+
 }
 
 
