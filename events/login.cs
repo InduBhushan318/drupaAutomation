@@ -320,6 +320,7 @@ namespace drupAuto.events
 
                 foreach (var checkboxLabel in checkboxes)
                 {
+                    SelectCheckboxByLabel(driver, checkboxLabel);
                 }
             }
 
@@ -332,7 +333,7 @@ namespace drupAuto.events
             try
             {
                 var label = driver.FindElement(By.XPath($"//span[text()='{labelText}']"));
-                var checkbox = label.FindElement(By.XPath("//ancestor::*//input"));
+                var checkbox = label.FindElement(By.XPath($"//ancestor-or-self::div[@class='list-data']//input[@type= 'checkbox']"));
 
                 if (!checkbox.Selected)
                 {
