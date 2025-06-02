@@ -301,51 +301,7 @@ namespace drupAuto.events
 
 
         }
-        //public void TabNames()
-        //{
-        //    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-        //    // List of tab names and checkbox labels you want to select
-        //    var tabNames = new List<string> {
-        //    "Priorities",
-        //    "Tech Stack",
-        //    "Globalization Footprint",
-        //    "Hiring",
-        //    "Signals",
-        //    "Service Providers",
-        //    "Key Executives"
-        //};
 
-        //    foreach (var tabName in tabNames)
-        //    {
-        //        Console.WriteLine($"Clicking tab: {tabName}");
-
-        //        // Click tab on left navigation
-        //        var tab = wait.Until(d => d.FindElement(By.XPath($"//span[normalize-space()='{tabName}']")));
-        //        tab.Click();
-
-        //        Thread.Sleep(1000); // Wait for UI to update
-
-        //        // Find all checkboxes under the current tab
-        //        var checkboxes = driver.FindElements(By.CssSelector("input[type='checkbox']"));
-
-        //        // Select first 1 or 2 checkboxes (customize as needed)
-        //        int count = 0;
-        //        foreach (var checkbox in checkboxes)
-        //        {
-        //            if (!checkbox.Selected && checkbox.Displayed)
-        //            {
-        //                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", checkbox);
-        //                Thread.Sleep(500); // Optional
-        //                count++;
-        //            }
-        //            if (count == 2) break; // Limit selections if needed
-        //        }
-        //    }
-
-        //    Console.WriteLine("Done!");
-        //    driver.Quit();
-
-        //}
         public void OpenTabOptions()
         {
 
