@@ -252,6 +252,7 @@ namespace drupAuto.events
                         pptAccountPlanElements[0].Click();
                         wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[text()='Get PPT via Email']")));
                         OpenTabOptions();
+                        // clik on send email button and wait for 2000 milliseconds
                     }
                     else
                     {
