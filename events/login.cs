@@ -252,6 +252,9 @@ namespace drupAuto.events
                         pptAccountPlanElements[0].Click();
                         wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[text()='Get PPT via Email']")));
                         OpenTabOptions();
+                        IWebElement pptEmailButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Get PPT via Email']")));
+                        pptEmailButton.Click();
+
                         // clik on send email button and wait for 2000 milliseconds
                     }
                     else
@@ -333,7 +336,7 @@ namespace drupAuto.events
             try
             {
                 var label = driver.FindElement(By.XPath($"//span[text()='{labelText}']"));
-                var checkbox = label.FindElement(By.XPath($"//ancestor-or-self::div[@class='list-data']//input[@type= 'checkbox']"));
+                var checkbox = label.FindElement(By.XPath($"//ancestor-or-self::div[@class='category-lists']//input[@type= 'checkbox']"));
 
                 if (!checkbox.Selected)
                 {
