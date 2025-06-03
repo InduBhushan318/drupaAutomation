@@ -307,7 +307,7 @@ namespace drupAuto.events
             { "Globalization Footprint", new List<string> { "Select All" } },
             { "Hiring", new List<string> { "IT", "Management & Strategy", "Procurement", "Customer Support & Service", "Financial Services Operations" } },
             { "Signals", new List<string> { "Select All" } },
-            { "Service Providers", new List<string> { "Software Testing", "DevOps", "Artificial Intelligence & Data Science", "Application Development & Maintenance", "Robotic Process Automation", "Data Engineering", "Mobile Application Development", "Legacy Modernization", "Infrastructure Management System", "Cybersecurity", "Product Installation, Maintenance & Technical Support", "System Integration" } },
+            { "Service Providers", new List<string> { "Software Testing", "DevOps", "Artificial Intelligence & Data Science", "Application Development & Maintenance", "Data Engineering", "Legacy Modernization", "Infrastructure Management System", "Cybersecurity", "Product Installation, Maintenance & Technical Support", "System Integration" } },
             { "Key Executives", new List<string> { } }
         };
 
