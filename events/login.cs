@@ -252,8 +252,10 @@ namespace drupAuto.events
                         pptAccountPlanElements[0].Click();
                         wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[text()='Get PPT via Email']")));
                         OpenTabOptions();
+                        Thread.Sleep(1000);
                         IWebElement pptEmailButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Get PPT via Email']")));
                         pptEmailButton.Click();
+                        Thread.Sleep(3000);
 
                         // clik on send email button and wait for 2000 milliseconds
                     }
@@ -307,7 +309,7 @@ namespace drupAuto.events
             { "Globalization Footprint", new List<string> { "Select All" } },
             { "Hiring", new List<string> { "IT", "Management & Strategy", "Procurement", "Customer Support & Service", "Financial Services Operations" } },
             { "Signals", new List<string> { "Select All" } },
-            { "Service Providers", new List<string> { "Software Testing", "DevOps", "Artificial Intelligence & Data Science", "Application Development & Maintenance", "Data Engineering", "Legacy Modernization", "Infrastructure Management System", "Cybersecurity", "Product Installation, Maintenance & Technical Support", "System Integration" } },
+            { "Service Providers", new List<string> { "Software Testing", "DevOps", "Artificial Intelligence & Data Science", "Application Development & Maintenance", "Data Engineering", "Infrastructure Management System", "Cybersecurity", "Maintenance & Technical Support", "System Integration" } },
             { "Key Executives", new List<string> { } }
         };
 
