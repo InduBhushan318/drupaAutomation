@@ -328,19 +328,18 @@ namespace drupAuto.events
             }
 
             Console.WriteLine("✅ Done selecting checkboxes from all tabs.");
-            driver.Quit();
+
         }
 
         public void SelectCheckboxByLabel(IWebDriver driver, string labelText)
         {
             try
             {
-                var label = driver.FindElement(By.XPath($"//span[text()='{labelText}']"));
-                var checkbox = label.FindElement(By.XPath($"//ancestor-or-self::div[@class='category-lists']//input[@type= 'checkbox']"));
+                var labelcheckbox = driver.FindElement(By.XPath($"//span[text()='{labelText}']//ancestor::label//input[@type='checkbox']"));
 
-                if (!checkbox.Selected)
+                if (!labelcheckbox.Selected)
                 {
-                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", checkbox);
+                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", labelcheckbox);
                     Thread.Sleep(300); // brief pause between selections
                     Console.WriteLine($"✔ Selected: {labelText}");
                 }
