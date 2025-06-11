@@ -15,9 +15,9 @@ class SeleniumDemo
     
     static void Main(string[] args)
     {
-        var options = new EdgeOptions();
+        var options = new ChromeOptions();
         options.AddArgument("start-maximized");
-        IWebDriver driver = new EdgeDriver(options);
+        WebDriver driver = new ChromeDriver(options);
         page _page=new page();
         var login = new login(driver);
         try
