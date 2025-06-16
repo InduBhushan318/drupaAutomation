@@ -17,12 +17,15 @@ namespace drupAuto.events
     public class login
     {
         IWebDriver driver;
-        public login(IWebDriver driver)
+        SimpleLogger logger;
+        public login(IWebDriver driver, SimpleLogger _logger)
         {
             this.driver = driver;
+            logger = _logger;
+
         }
 
-        public void WaitForPageLoad(int timeoutSeconds = 30)
+        public void WaitForPageLoad(int timeoutSeconds = 180)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutSeconds));
             wait.Until(d =>
@@ -33,7 +36,7 @@ namespace drupAuto.events
         public void MoveMouseToGrid()
         {
             By tableheaderPath = By.XPath("//*[@id=\"table_info_popover_Account\"]/div[1]");
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
             IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(tableheaderPath));
             Actions actions = new Actions(driver);
             actions.MoveToElement(element).Perform();
@@ -44,18 +47,18 @@ namespace drupAuto.events
         {
             try
             {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
                 // Try to find a button or span with text 'Accept' or 'Accept Cookies'
                 var acceptButton = wait.Until(ExpectedConditions.ElementToBeClickable(
                     By.XPath("//button[@aria-label='Accept']")
                 ));
                 acceptButton.Click();
                 Thread.Sleep(500);
-                Console.WriteLine("Cookie accept button clicked.");
+                logger.Log("Cookie accept button clicked.");
             }
             catch (WebDriverTimeoutException)
             {
-                Console.WriteLine("Cookie accept button not found, proceeding without clicking.");
+                logger.Log("Cookie accept button not found, proceeding without clicking.");
             }
 
         }
@@ -87,25 +90,25 @@ namespace drupAuto.events
 
         public void HandleOptionalPopup()
         {
-            Console.WriteLine("Handling optional popup if present...");
+            logger.Log("Handling optional popup if present...");
             Actions actions = new Actions(driver);
             try
             {
                 // Wait for the page to load and the popup to appear
                 By skipbtn = By.XPath("//span[text()='Skip']");
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
                 IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn));
-                Console.WriteLine("displayed the text of skip button");
-                Console.WriteLine(skipButton.Text);
+                logger.Log("displayed the text of skip button");
+                logger.Log(skipButton.Text);
                 actions.SendKeys(Keys.Escape).Perform();
-                Console.WriteLine("Skip button Press.");
+                logger.Log("Skip button Press.");
             }
             catch (WebDriverTimeoutException)
             {
                 Thread.Sleep(30000);
                 actions.SendKeys(Keys.Escape).Perform();
                 // Skip button didn't appear - do nothing
-                Console.WriteLine("Skip button not present, proceeding without skipping.");
+                logger.Log("Skip button not present, proceeding without skipping.");
             }
 
 
@@ -114,23 +117,23 @@ namespace drupAuto.events
 
         public void ClickIndustryButtonInNav()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
             IWebElement industryDropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/li[1]/a")));
             industryDropdown.Click();
-            Console.WriteLine("Industry Button clicked.");
+            logger.Log("Industry Button clicked.");
         }
         public void SelectFromAccountsDropdown()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
 
 
             IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
             dropdownbutton.Click();
-            Console.WriteLine("Click on Industry dropdown.");
+            logger.Log("Click on Industry dropdown.");
 
             IWebElement chooseAccounts = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/div/div/li[2]/a")));
             chooseAccounts.Click();
-            Console.WriteLine("account option choosen.");
+            logger.Log("account option choosen.");
 
         }
 
@@ -139,20 +142,20 @@ namespace drupAuto.events
             MoveMouseToGrid();
             By tableheaderPath = By.XPath("//*[@id=\"table_info_popover_Account\"]/div[1]");
             By tablePagerPath = By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/span");
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
             wait.Until(ExpectedConditions.ElementExists(tableheaderPath));
             Actions actions = new Actions(driver);
             while (true)
             {
-                Console.WriteLine("Scrolling down the page... from scroll page down function");
+                logger.Log("Scrolling down the page... from scroll page down function");
                 actions.SendKeys(Keys.ArrowDown).Perform();
                 Thread.Sleep(100); // Optional pause to simulate natural scroll
 
-                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
                 IWebElement pagerText = wait.Until(ExpectedConditions.ElementExists(tablePagerPath));
                 if (pagerText.Text.ToLower().Trim() == "results per page")
                 {
-                    Console.WriteLine("Reached the end of the page or Results per Page text found.");
+                    logger.Log("Reached the end of the page or Results per Page text found.");
                     break; // Exit the loop if the text is found
                 }
 
@@ -161,7 +164,7 @@ namespace drupAuto.events
 
         public void SelectResultPerPage100()
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
 
             var dropdown = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("(//div[contains(@class, 'caret-icon')]//i)[2]")));
             dropdown.Click();
@@ -174,7 +177,7 @@ namespace drupAuto.events
 
         public bool CheckandClickAllPageSpans(int pagenumber)
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
             // Wait for the page container to be present
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".page-container")));
 
@@ -188,17 +191,17 @@ namespace drupAuto.events
                 int actuallPageNumber = Convert.ToInt32(pageSpans[i].Text.Trim());
                 if (actuallPageNumber == pagenumber)
                 {
-                    Console.WriteLine("page number " + pageSpans[i] + "clicked on trageted page");
+                    logger.Log("page number " + pageSpans[i] + "clicked on trageted page");
                     pageSpans[i].Click();
                     desiredPageclicked = true;
                     break;
                 }
                 else if (counter == 5)
                 {
-                    Console.WriteLine("page number " + pageSpans[i] + "clicked as last page in paging");
+                    logger.Log("page number " + pageSpans[i] + "clicked as last page in paging");
                     pageSpans[i].Click();
                 }
-                Console.WriteLine("page number " + pageSpans[i] + "skiped");
+                logger.Log("page number " + pageSpans[i] + "skiped");
                 counter = counter + 1;
                 // Exit if the desired page number is found and clicked
             }
@@ -208,100 +211,116 @@ namespace drupAuto.events
 
         }
 
-        public void NavigateInsideAccount(page _page)
+        public bool NavigateInsideAccount(page _page)
         {
+            bool allrecordsProcessded= false;
             int counter = 0;
             while (true)
             {
-                Console.WriteLine("inside NavigateInsideAccount");
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
-                wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".react-grid-Row")));
-
-                var rows = driver.FindElements(By.CssSelector(".react-grid-Row"));
-
-                Console.WriteLine("Total rows found: " + rows.Count);
-
-                var cells = rows[counter].FindElements(By.TagName("div"));
-                Console.WriteLine("totals cells in each row:-" + cells.Count());
-                if (counter >= 10)
+                string accountName = "";
+                try
                 {
-                    Actions actions = new Actions(driver);
-                    for (int z = 0; z <= counter; z++)
+                    logger.Log("inside NavigateInsideAccount");
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+                    wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".react-grid-Row")));
+
+                    var rows = driver.FindElements(By.CssSelector(".react-grid-Row"));
+
+                    logger.Log("Total rows found: " + rows.Count);
+
+                    var cells = rows[counter].FindElements(By.TagName("div"));
+                    logger.Log("totals cells in each row:-" + cells.Count());
+                    if (counter >= 10)
                     {
-                        Console.WriteLine("scrolling event is called from inside the NavigateInsideAccount");
-                        actions.SendKeys(Keys.ArrowDown).Perform();
-                        Thread.Sleep(100); // Optional pause to simulate natural scroll
-                    }
-                }
-
-
-
-                if (cells.Count > 0)
-                {
-                    string accountName = cells[43].Text.Trim();
-                    Console.WriteLine(accountName);
-                    cells[43].Click();
-                    wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
-                    var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
-                    downloadImage.Click();
-
-                    Thread.Sleep(1000); // Wait for the dropdown to appear
-                    var pptAccountPlanElements = driver.FindElements(By.XPath("//li[text()='PPT Account Plan']"));
-                    if (pptAccountPlanElements.Count > 0 && pptAccountPlanElements[0].Displayed)
-                    {
-                        pptAccountPlanElements[0].Click();
-                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[text()='Get PPT via Email']")));
-                        OpenTabOptions();
-                        Thread.Sleep(1000);
-                        IWebElement pptEmailButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Get PPT via Email']")));
-                        pptEmailButton.Click();
-                        Thread.Sleep(3000);
-
-                        // clik on send email button and wait for 2000 milliseconds
-                    }
-                    else
-                    {
-                        Console.WriteLine("'PPT Account Plan' option not found in the DOM or not visible.");
+                        Actions actions = new Actions(driver);
+                       
+                            for (int z = 0; z <= counter; z++)
+                            {
+                                actions.SendKeys(Keys.ArrowDown).Perform();
+                                Thread.Sleep(100); // Optional pause to simulate natural scroll
+                            }
                     }
 
-                    wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
 
-                    IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
-                    dropdownbutton.Click();
-                    Console.WriteLine("Click on Industry dropdown.");
-
-                    IWebElement chooseAccounts = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/div/div/li[2]/a")));
-                    chooseAccounts.Click();
-                    Console.WriteLine("account option choosen. NavigateInsideAccount");
-
-
-                    // end here 
-                    _page.Accounts.Add(new AccountsModel
+                    if (cells.Count > 0)
                     {
-                        AccountName = accountName,
-                        isProcessed = true
-                    });
+                         accountName = cells[43].Text.Trim();
+                        logger.Log(accountName);
+                        cells[43].Click();
+                        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+                        var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
+                        downloadImage.Click();
+
+                        Thread.Sleep(1000); // Wait for the dropdown to appear
+                        var pptAccountPlanElements = driver.FindElements(By.XPath("//li[text()='PPT Account Plan']"));
+                        if (pptAccountPlanElements.Count > 0 && pptAccountPlanElements[0].Displayed)
+                        {
+                            pptAccountPlanElements[0].Click();
+                            wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[text()='Get PPT via Email']")));
+                            OpenTabOptions();
+                            Thread.Sleep(1000);
+                            IWebElement pptEmailButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Get PPT via Email']")));
+                            pptEmailButton.Click();
+                            Thread.Sleep(3000);
+
+                            // clik on send email button and wait for 2000 milliseconds
+                        }
+                        else
+                        {
+                            logger.Log("'PPT Account Plan' option not found in the DOM or not visible.");
+                        }
+
+                        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+
+
+                        IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
+                        dropdownbutton.Click();
+                        logger.Log("Click on Industry dropdown.");
+
+                        IWebElement chooseAccounts = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/div/div/li[2]/a")));
+                        chooseAccounts.Click();
+                        logger.Log("account option choosen. NavigateInsideAccount");
+
+
+                        // end here 
+                        _page.Accounts.Add(new AccountsModel
+                        {
+                            AccountName = accountName,
+                            isProcessed = true
+                        });
+                    }
+
+                    counter = counter + 1;
+                    if (counter >= 25)
+                    {
+                        allrecordsProcessded = true;
+                        logger.Log("All accounts processed for this page.");
+                        break; // Exit the loop if all accounts are processed
+                    }
+
+                    logger.Log("counter :" + counter);
+                }
+                catch (Exception ex)
+                {
+                    counter = counter + 1;
+                    logger.Log("Clinet Name: " + accountName);
+                    logger.Log("Error while navigating inside account: " + ex.Message);
+                    return allrecordsProcessded;
                 }
 
-                counter = counter + 1;
-                if (counter >= 100)
-                {
-                    Console.WriteLine("All accounts processed for this page.");
-                    break; // Exit the loop if all accounts are processed
-                }
+                
 
             }
 
-
-
+            return allrecordsProcessded;
 
         }
 
         public void OpenTabOptions()
         {
 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             var tabOptions = new Dictionary<string, List<string>>
         {
             { "Priorities", new List<string> { "Select All" } },
@@ -318,10 +337,18 @@ namespace drupAuto.events
                 string tabName = tab.Key;
                 List<string> checkboxes = tab.Value;
 
-                Console.WriteLine($"Navigating to tab: {tabName}");
-                var tabElement = wait.Until(d => d.FindElement(By.XPath($"//span[@class='general-400 text' and text()='{tabName}']")));
-                tabElement.Click();
-                Thread.Sleep(1000); // wait for content to load
+                logger.Log($"Navigating to tab: {tabName}");
+                try
+                {
+                    var tabElement = wait.Until(d => d.FindElement(By.XPath($"//span[@class='general-400 text' and text()='{tabName}']")));
+                    tabElement.Click();
+                    Thread.Sleep(1000); // wait for content to load
+                }
+                catch(Exception ex)
+                {
+                    logger.Log($"Tab not found '{tabName}': {ex.Message}");
+                    continue; // Skip to the next tab if this one fails
+                }
 
                 foreach (var checkboxLabel in checkboxes)
                 {
@@ -329,7 +356,7 @@ namespace drupAuto.events
                 }
             }
 
-            Console.WriteLine("✅ Done selecting checkboxes from all tabs.");
+            logger.Log("✅ Done selecting checkboxes from all tabs.");
 
         }
 
@@ -343,12 +370,12 @@ namespace drupAuto.events
                 {
                     ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", labelcheckbox);
                     Thread.Sleep(300); // brief pause between selections
-                    Console.WriteLine($"✔ Selected: {labelText}");
+                    logger.Log($"✔ Selected: {labelText}");
                 }
             }
             catch (NoSuchElementException)
             {
-                Console.WriteLine($"⚠ Checkbox not found: {labelText}");
+                logger.Log($"⚠ Checkbox not found: {labelText}");
             }
         }
 

@@ -15,11 +15,14 @@ class SeleniumDemo
     
     static void Main(string[] args)
     {
+        Guid guid = Guid.NewGuid();
+        var logger = new SimpleLogger(guid.ToString());
+        logger.Log("Application started.");
         var options = new ChromeOptions();
         options.AddArgument("start-maximized");
         WebDriver driver = new ChromeDriver(options);
         page _page=new page();
-        var login = new login(driver);
+        var login = new login(driver,logger);
         try
         {
             var desiredPageclicked = true;
@@ -29,8 +32,8 @@ class SeleniumDemo
             login.HandleOptionalPopup();
             login.ClickIndustryButtonInNav();
             login.SelectFromAccountsDropdown();
-            login.ScrolePageDown();
-            login.SelectResultPerPage100();
+            //login.ScrolePageDown();
+            //login.SelectResultPerPage100();
           
 
             _page.PageNumber = 1;//db_operations.getPage();
@@ -49,7 +52,17 @@ class SeleniumDemo
                     }
                 }
             }
-            login.NavigateInsideAccount(_page);
+            while (true)
+            {
+                var allrecoredProcessded = login.NavigateInsideAccount(_page);
+                if (allrecoredProcessded)
+                {
+                    login.WaitForPageLoad();
+                    login.ScrolePageDown();
+                    login.CheckandClickAllPageSpans((_page.PageNumber+1));
+                }
+            }
+           
 
             Console.ReadLine(); // Wait for user input before closing
         }
