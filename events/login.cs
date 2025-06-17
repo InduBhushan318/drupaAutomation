@@ -271,9 +271,9 @@ namespace drupAuto.events
                             logger.Log("'PPT Account Plan' option not found in the DOM or not visible.");
                         }
 
-                        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+                        wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
 
-
+                        Thread.Sleep(1000);
                         IWebElement dropdownbutton = wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("nav-dropdown")));
                         dropdownbutton.Click();
                         logger.Log("Click on Industry dropdown.");
@@ -292,7 +292,7 @@ namespace drupAuto.events
                     }
 
                     counter = counter + 1;
-                    if (counter >= 25)
+                    if (counter >= 24)
                     {
                         allrecordsProcessded = true;
                         logger.Log("All accounts processed for this page.");
