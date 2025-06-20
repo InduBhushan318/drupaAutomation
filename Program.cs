@@ -57,9 +57,10 @@ class SeleniumDemo
                 var allrecoredProcessded = login.NavigateInsideAccount(_page);
                 if (allrecoredProcessded)
                 {
+                    _page.PageNumber = _page.PageNumber + 1;//navigate to next page
                     login.WaitForPageLoad();
                     login.ScrolePageDown();
-                    login.CheckandClickAllPageSpans((_page.PageNumber+1));
+                    login.CheckandClickAllPageSpans((_page.PageNumber));
                 }
             }
            
