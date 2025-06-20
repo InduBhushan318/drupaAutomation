@@ -54,6 +54,7 @@ class SeleniumDemo
             }
             while (true)
             {
+                logger.Log(message: $"Processing page number: {_page.PageNumber}");
                 var allrecoredProcessded = login.NavigateInsideAccount(_page);
                 if (allrecoredProcessded)
                 {
