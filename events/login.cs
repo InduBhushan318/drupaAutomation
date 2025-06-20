@@ -292,7 +292,7 @@ namespace drupAuto.events
                     }
 
                     counter = counter + 1;
-                    if (counter >= 24)
+                    if (counter >= 25)
                     {
                         allrecordsProcessded = true;
                         logger.Log("All accounts processed for this page.");
