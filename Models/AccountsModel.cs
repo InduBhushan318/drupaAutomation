@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace drupAuto.Models
 {
-    public class page
+    public class pagesModel
     {
+        public int id { get; set; }
         public int PageNumber { get; set; }
-        public List<AccountsModel> Accounts { get; set; } = new List<AccountsModel>();
+        public bool isprocessed { get; set; }
     }
     
-    public class AccountsModel
-    {
-        public string AccountName { get; set; }
-        public bool isProcessed { get; set; } = false;
-    }
+  
 }

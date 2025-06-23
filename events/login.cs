@@ -211,7 +211,7 @@ namespace drupAuto.events
 
         }
 
-        public bool NavigateInsideAccount(page _page)
+        public bool NavigateInsideAccount(int pageNumber)
         {
             bool allrecordsProcessded= false;
             int counter = 0;
@@ -281,14 +281,6 @@ namespace drupAuto.events
                         IWebElement chooseAccounts = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"navbar-collapse-first\"]/ul[1]/div/div/li[2]/a")));
                         chooseAccounts.Click();
                         logger.Log("account option choosen. NavigateInsideAccount");
-
-
-                        // end here 
-                        _page.Accounts.Add(new AccountsModel
-                        {
-                            AccountName = accountName,
-                            isProcessed = true
-                        });
                     }
 
                     counter = counter + 1;
@@ -296,6 +288,7 @@ namespace drupAuto.events
                     {
                         allrecordsProcessded = true;
                         logger.Log("All accounts processed for this page.");
+                        logger.Log("counter :" + counter);
                         break; // Exit the loop if all accounts are processed
                     }
 
