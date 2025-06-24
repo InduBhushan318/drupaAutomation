@@ -12,7 +12,7 @@ namespace drupAuto
 {
     internal static class db_operations
     {
-        private static string connectionstring = @"Server=TXCHD-LAP-241\SQLEXPRESS;Database=dupra;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
+        private static string connectionstring = @"Server=TX\MSSQLNEW;Database=dupra;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
 
 
 
