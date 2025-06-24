@@ -41,26 +41,28 @@ class SeleniumDemo
             var pagetoBeselected = _page.FirstOrDefault(x => x.isprocessed == false);
             
 
-            if (pagetoBeselected.PageNumber > 1)
-            {
-                while (true)
-                {
-                    login.WaitForPageLoad();
-                    login.ScrolePageDown();
-                    desiredPageclicked = login.CheckandClickAllPageSpans(pagetoBeselected.PageNumber);
+            //if (pagetoBeselected.PageNumber > 1)
+            //{
+            //    while (true)
+            //    {
+            //        login.WaitForPageLoad();
+            //        login.ScrolePageDown();
+            //        desiredPageclicked = login.CheckandClickAllPageSpans(pagetoBeselected.PageNumber);
 
-                    if (desiredPageclicked == true)
-                    {
-                        break;
-                    }
-                }
-            }
+            //        if (desiredPageclicked == true)
+            //        {
+            //            break;
+            //        }
+            //    }
+            //}
             for (int i = 0; i < _page.Count(); i++)
             {
                 logger.Log(message: $"Processing page number: {_page[i].PageNumber}");
-                if (i > 0)
+                if (_page[i].PageNumber != 1 && _page[i].PageNumber > 0)
                 {
                     logger.Log(message: $"inside the if condition");
+                    login.WaitForPageLoad();
+                    login.ScrolePageDown();
                     login.CheckandClickAllPageSpans((_page[i].PageNumber));
                     Thread.Sleep(10000);
                 }

@@ -105,7 +105,7 @@ namespace drupAuto.events
             }
             catch (WebDriverTimeoutException)
             {
-                Thread.Sleep(30000);
+                Thread.Sleep(15000);
                 actions.SendKeys(Keys.Escape).Perform();
                 // Skip button didn't appear - do nothing
                 logger.Log("Skip button not present, proceeding without skipping.");
