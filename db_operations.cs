@@ -5,67 +5,64 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using drupAuto.Models;
+using OpenQA.Selenium.DevTools.V135.Page;
 
 namespace drupAuto
 {
     internal static class db_operations
     {
-        private static string connectionstring = @"Server=TXCHD-LAP-241\\SQLEXPRESS;Database=dupra1;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=Optional;";
+        private static string connectionstring = @"Server=TXCHD-LAP-241\SQLEXPRESS;Database=dupra;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
 
-        public static void InsertAccont(int pageNumber,string accountName)
+
+
+        public static List<pagesModel> getPage()
         {
+            List<pagesModel> pm = new List<pagesModel>();
             using (var connection = new SqlConnection(connectionstring))
-            using (var command = new SqlCommand("InsertAccount", connection))
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@pagenumber", pageNumber);
-                command.Parameters.AddWithValue("@accountname", accountName);
-                
-
-                if (connection.State == ConnectionState.Open)
+                using (var command = new SqlCommand("select * from [dbo].[Pages] where isprocessed=0 order by id ", connection))
                 {
-                    connection.Close();
+                    command.CommandType = CommandType.Text;
+
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            pm.Add(new pagesModel
+                            {
+                                id = Convert.ToInt32(reader["id"]),
+                                PageNumber = Convert.ToInt32(reader["PageNumber"]),
+                                isprocessed = Convert.ToBoolean(reader["isprocessed"])
+                            });
+                        }
+                    }
+                    return pm;
                 }
-                connection.Open();
-                command.ExecuteNonQuery();
-                connection.Close();
             }
         }
 
-        public static void InsertPage(int pageNumber)
+        public static void UpdatePage(int pageId, bool isprocessed)
         {
             using (var connection = new SqlConnection(connectionstring))
-            using (var command = new SqlCommand("pages_insert", connection))
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@pagenumber", pageNumber);
-
-                if(connection.State == ConnectionState.Open)
+                using (var command = new SqlCommand("update pages  set isprocessed = 1 where id= " + pageId, connection))
                 {
+                    command.CommandType = CommandType.Text;
+
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    connection.Open();
+                    command.ExecuteNonQuery();
                     connection.Close();
                 }
-                connection.Open();
-                command.ExecuteNonQuery();
-                connection.Close();
-            }
-        }
-
-        public static int getPage()
-        {
-            using (var connection = new SqlConnection(connectionstring))
-            using (var command = new SqlCommand("getpages", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-               
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
-                connection.Open();
-                object result = command.ExecuteScalar();
-                connection.Close();
-
-                return result != null ? Convert.ToInt32(result) : 1;
             }
         }
     }
