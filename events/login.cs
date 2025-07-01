@@ -177,33 +177,39 @@ namespace drupAuto.events
 
         public bool CheckandClickAllPageSpans(int pagenumber)
         {
+            ScrolePageDown();
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
             // Wait for the page container to be present
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".page-container")));
-
             // Find all page number spans (excluding prev/next)
-            var pageSpans = driver.FindElements(By.CssSelector(".page-container > span.page"));
             var desiredPageclicked = false;
             int counter = 1;
-            for (int i = 0; i < pageSpans.Count; i++)
+            while(true)
             {
-
-                int actuallPageNumber = Convert.ToInt32(pageSpans[i].Text.Trim());
-                if (actuallPageNumber == pagenumber)
+                
+                ScrolePageDown();
+                var pageSpans = driver.FindElements(By.CssSelector(".page-container > span.page"));
+                if (pageSpans.Any(m=> Convert.ToInt32(m.Text.Trim()) == pagenumber))
                 {
-                    logger.Log("page number " + pageSpans[i] + "clicked on trageted page");
-                    pageSpans[i].Click();
-                    desiredPageclicked = true;
+                    var actualPage = pageSpans.First(m => Convert.ToInt32(m.Text.Trim()) == pagenumber);
+                    logger.Log("page number " + actualPage.Text + "clicked on trageted page");
+                    actualPage.Click();
+                    Thread.Sleep(10000);
+                    desiredPageclicked=true;
                     break;
                 }
-                else if (counter == 5)
+                else
                 {
-                    logger.Log("page number " + pageSpans[i] + "clicked as last page in paging");
-                    pageSpans[i].Click();
+                    var nextPagespan = pageSpans.Last();
+                    logger.Log("page number " + nextPagespan.Text + "clicked on trageted page");
+                    nextPagespan.Click();
                 }
-                logger.Log("page number " + pageSpans[i] + "skiped");
+                
                 counter = counter + 1;
-                // Exit if the desired page number is found and clicked
+                if(counter==5)
+                {
+                    counter = 1;
+                }
             }
 
             return desiredPageclicked;
