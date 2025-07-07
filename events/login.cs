@@ -178,7 +178,7 @@ namespace drupAuto.events
         public bool CheckandClickAllPageSpans(int pagenumber)
         {
             ScrolePageDown();
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(90));
             // Wait for the page container to be present
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".page-container")));
             // Find all page number spans (excluding prev/next)
@@ -194,7 +194,7 @@ namespace drupAuto.events
                     var actualPage = pageSpans.First(m => Convert.ToInt32(m.Text.Trim()) == pagenumber);
                     logger.Log("page number " + actualPage.Text + "clicked on trageted page");
                     actualPage.Click();
-                    Thread.Sleep(10000);
+                    Thread.Sleep(5000);
                     desiredPageclicked=true;
                     break;
                 }
@@ -227,7 +227,7 @@ namespace drupAuto.events
                 try
                 {
                     logger.Log("inside NavigateInsideAccount");
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
                     wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".react-grid-Row")));
 
                     var rows = driver.FindElements(By.CssSelector(".react-grid-Row"));

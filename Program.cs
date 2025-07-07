@@ -53,21 +53,21 @@ class SeleniumDemo
                 }
                 
                 login.NavigateInsideAccount(_page[i].PageNumber);
-                Thread.Sleep(15000); // Wait for the page to load
+                Thread.Sleep(10000); // Wait for the page to load
                 login.ScrolePageDown();
                 _page[i].isprocessed = true; // Mark the page as processed
                 db_operations.UpdatePage(_page[i].id, _page[i].isprocessed);
             }
-            Console.ReadLine(); // Wait for user input before closing
         }
         catch (Exception ex)
         {
+            logger.Log(message: "Error: " + ex.Message);
             Console.WriteLine("Error: " + ex.Message);
         }
-        //finally
-        //{
-        //    driver.Quit();
-        //}
+        finally
+        {
+            driver.Quit();
+        }
 
         //Console.ReadLine();
     }
