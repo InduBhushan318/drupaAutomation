@@ -19,9 +19,9 @@ class SeleniumDemo
         Guid guid = Guid.NewGuid();
         var logger = new SimpleLogger(guid.ToString());
         logger.Log("Application started.");
-        var options = new ChromeOptions();
+        var options = new EdgeOptions();
         options.AddArgument("start-maximized");
-        WebDriver driver = new ChromeDriver(options);
+        WebDriver driver = new EdgeDriver(options);
 
         var login = new login(driver, logger);
         try

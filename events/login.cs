@@ -305,7 +305,7 @@ namespace drupAuto.events
                     counter = counter + 1;
                     logger.Log("Clinet Name: " + accountName);
                     logger.Log("Error while navigating inside account: " + ex.Message);
-                    return allrecordsProcessded;
+                    //return allrecordsProcessded;
                 }
 
                 
