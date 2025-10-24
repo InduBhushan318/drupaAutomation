@@ -1,4 +1,6 @@
-﻿using drupAuto.Models;
+﻿using AngleSharp.Html;
+using drupAuto.Models;
+using drupAuto.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -67,7 +69,7 @@ namespace drupAuto.events
         {
             //AcceptCookies();
             IWebElement searchBox = driver.FindElement(By.Id("emailsso"));
-            searchBox.SendKeys("kevin.ferrao@testingxperts.com");
+            searchBox.SendKeys("ojas.gupta@testingxperts.com");
 
             IWebElement contubtn = driver.FindElement(By.Id("login-btnsso"));
 
@@ -96,7 +98,7 @@ namespace drupAuto.events
             {
                 // Wait for the page to load and the popup to appear
                 By skipbtn = By.XPath("//span[text()='Skip']");
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 IWebElement skipButton = wait.Until(ExpectedConditions.ElementExists(skipbtn));
                 logger.Log("displayed the text of skip button");
                 logger.Log(skipButton.Text);
@@ -141,7 +143,7 @@ namespace drupAuto.events
         {
             MoveMouseToGrid();
             By tableheaderPath = By.XPath("//*[@id=\"table_info_popover_Account\"]/div[1]");
-            By tablePagerPath = By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div[1]/span");
+            By tablePagerPath = By.XPath("//*[@id=\"root\"]/div/div/div/div/main/div/div/div[1]/div[2]/div/div[3]/div/div[2]/div/div/div[1]/span");
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
             wait.Until(ExpectedConditions.ElementExists(tableheaderPath));
             Actions actions = new Actions(driver);
@@ -184,18 +186,18 @@ namespace drupAuto.events
             // Find all page number spans (excluding prev/next)
             var desiredPageclicked = false;
             int counter = 1;
-            while(true)
+            while (true)
             {
-                
+
                 ScrolePageDown();
                 var pageSpans = driver.FindElements(By.CssSelector(".page-container > span.page"));
-                if (pageSpans.Any(m=> Convert.ToInt32(m.Text.Trim()) == pagenumber))
+                if (pageSpans.Any(m => Convert.ToInt32(m.Text.Trim()) == pagenumber))
                 {
                     var actualPage = pageSpans.First(m => Convert.ToInt32(m.Text.Trim()) == pagenumber);
                     logger.Log("page number " + actualPage.Text + "clicked on trageted page");
                     actualPage.Click();
                     Thread.Sleep(5000);
-                    desiredPageclicked=true;
+                    desiredPageclicked = true;
                     break;
                 }
                 else
@@ -204,9 +206,9 @@ namespace drupAuto.events
                     logger.Log("page number " + nextPagespan.Text + "clicked on trageted page");
                     nextPagespan.Click();
                 }
-                
+
                 counter = counter + 1;
-                if(counter==5)
+                if (counter == 5)
                 {
                     counter = 1;
                 }
@@ -219,7 +221,7 @@ namespace drupAuto.events
 
         public bool NavigateInsideAccount(int pageNumber)
         {
-            bool allrecordsProcessded= false;
+            bool allrecordsProcessded = false;
             int counter = 0;
             while (true)
             {
@@ -239,21 +241,23 @@ namespace drupAuto.events
                     if (counter >= 10)
                     {
                         Actions actions = new Actions(driver);
-                       
-                            for (int z = 0; z <= counter; z++)
-                            {
-                                actions.SendKeys(Keys.ArrowDown).Perform();
-                                Thread.Sleep(100); // Optional pause to simulate natural scroll
-                            }
+
+                        for (int z = 0; z <= counter; z++)
+                        {
+                            actions.SendKeys(Keys.ArrowDown).Perform();
+                            Thread.Sleep(100); // Optional pause to simulate natural scroll
+                        }
                     }
 
 
 
                     if (cells.Count > 0)
                     {
-                         accountName = cells[43].Text.Trim();
+                        int index = 40;
+                        logger.Log(cells[index].Text + "     index = " + index);
+                        accountName = cells[index].Text.Trim();
                         logger.Log(accountName);
-                        cells[43].Click();
+                        cells[index].Click();
                         wait = new WebDriverWait(driver, TimeSpan.FromSeconds(180));
                         var downloadImage = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[contains(@class, 'ds-download-dropdown new-download-btn')]//i")));
                         downloadImage.Click();
@@ -268,13 +272,16 @@ namespace drupAuto.events
                             Thread.Sleep(1000);
                             IWebElement pptEmailButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text()='Get PPT via Email']")));
                             pptEmailButton.Click();
-                            Thread.Sleep(3000);
+                            Thread.Sleep(2000);
 
                             // clik on send email button and wait for 2000 milliseconds
                         }
                         else
                         {
                             logger.Log("'PPT Account Plan' option not found in the DOM or not visible.");
+                            var actions = new Actions(driver);
+                            actions.SendKeys(Keys.Escape).Perform();
+                            Thread.Sleep(500); // small pause to let UI react
                         }
 
                         wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
@@ -308,7 +315,7 @@ namespace drupAuto.events
                     //return allrecordsProcessded;
                 }
 
-                
+
 
             }
 
@@ -343,7 +350,7 @@ namespace drupAuto.events
                     tabElement.Click();
                     Thread.Sleep(1000); // wait for content to load
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     logger.Log($"Tab not found '{tabName}': {ex.Message}");
                     continue; // Skip to the next tab if this one fails

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using drupAuto.Models;
-using OpenQA.Selenium.DevTools.V135.Page;
+using OpenQA.Selenium.DevTools.V139.Page;
 
 namespace drupAuto
 {

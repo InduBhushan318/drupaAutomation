@@ -53,7 +53,7 @@ class SeleniumDemo
                 }
                 
                 login.NavigateInsideAccount(_page[i].PageNumber);
-                Thread.Sleep(10000); // Wait for the page to load
+                Thread.Sleep(5000); // Wait for the page to load
                 login.ScrolePageDown();
                 _page[i].isprocessed = true; // Mark the page as processed
                 db_operations.UpdatePage(_page[i].id, _page[i].isprocessed);
